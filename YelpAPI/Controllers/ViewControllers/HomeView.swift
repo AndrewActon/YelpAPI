@@ -7,7 +7,7 @@
 
 import UIKit
 
-class HomeView: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
+class HomeView: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, DetailMenuDelegate {
     
     //MARK: - Properties
     var businessess: [Business?] = [] {
@@ -18,14 +18,20 @@ class HomeView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
             }
         }
     }
+    var tally: Int = 0
 
     //MARK: - Outlets
     @IBOutlet weak var popularLabel: UILabel!
-//    @IBOutlet weak var orderNowImage: UIImageView!
-    @IBOutlet weak var orderNowLabel: UILabel!
     @IBOutlet weak var suggestionCollectionView: UICollectionView!
     @IBOutlet weak var locationImage: UIImageView!
     @IBOutlet weak var locationLabel: UILabel!
+    @IBOutlet weak var orderNowButton: UIButton!
+    @IBOutlet weak var driverImage: UIImageView!
+    @IBOutlet weak var foodCategoriesLabel: UILabel!
+    @IBOutlet weak var categoriesCollectionView: UICollectionView!
+    
+    
+    
     
     
     
@@ -34,10 +40,8 @@ class HomeView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
         super.viewDidLoad()
         suggestionCollectionView.delegate = self
         suggestionCollectionView.dataSource = self
-        popularLabel.text = "Popular"
-        locationLabel.text = "Layton, UT"
-        locationImage.image = UIImage(systemName: "location")
         fetchPopular()
+        updateViews()
     }
     
     //MARK: - Helper Methods
@@ -54,30 +58,54 @@ class HomeView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
         }
     }
     
+    func updateTally() {
+        tally += 1
+        updateViews()
+    }
+    
+    func updateViews() {
+        popularLabel.text = "Popular"
+        locationLabel.text = "Layton, UT"
+        locationImage.image = UIImage(systemName: "location")
+        if tally == 0 {
+            orderNowButton.setTitle("No Orders", for: .normal)
+        } else {
+            orderNowButton.setTitle("Order Now \(tally)", for: .normal)
+        }
+    }
+    
     //MARK: - Collection View
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return businessess.count
+        if collectionView == categoriesCollectionView {
+            return CategoryOptions.categories.count
+        } else if collectionView == suggestionCollectionView {
+            return businessess.count
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-       guard let cell = suggestionCollectionView.dequeueReusableCell(withReuseIdentifier: "suggestionCell", for: indexPath) as? SuggestionCVCell,
-        
-                let bussiness = businessess[indexPath.row]
-                
-                else { return UICollectionViewCell() }
-        
-        
-        cell.updateViews(business: bussiness)
-        cell.suggestionImage.load(url: bussiness.imageURL)
-        
-        return cell
+        if collectionView == categoriesCollectionView {
+            guard let cell = categoriesCollectionView.dequeueReusableCell(withReuseIdentifier: "categoriesCell", for: indexPath) as? CategoryCollectionViewCell else { return UICollectionViewCell() }
+            #warning("start here")
+                    
+        } else if collectionView == suggestionCollectionView {
+            guard let cell = suggestionCollectionView.dequeueReusableCell(withReuseIdentifier: "suggestionCell", for: indexPath) as? SuggestionCVCell,
+                  
+                    let bussiness = businessess[indexPath.row]
+                    
+            else { return UICollectionViewCell() }
+            
+            
+            cell.updateViews(business: bussiness)
+            cell.suggestionImage.load(url: bussiness.imageURL)
+            
+            return cell
+        }
     }
     
      
     
     // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "toDetailMenu" {
             guard let destination = segue.destination as? DetailMenuVC,
@@ -91,6 +119,7 @@ class HomeView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
             else { return }
             
             destination.business = business
+            destination.delegate = self
         }
     }
   
@@ -98,7 +127,12 @@ class HomeView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
     //MARK: - Actions
     
     @IBAction func orderNowButtonTapped(_ sender: Any) {
-        
+        if tally == 0 {
+            UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 5) {
+                self.driverImage.transform = CGAffineTransform(translationX: 10, y: 1)
+            }
+            self.driverImage.transform = .identity
+            }
     }
     
     
