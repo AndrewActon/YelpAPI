@@ -40,6 +40,8 @@ class HomeView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
         super.viewDidLoad()
         suggestionCollectionView.delegate = self
         suggestionCollectionView.dataSource = self
+        categoriesCollectionView.delegate = self
+        categoriesCollectionView.dataSource = self
         fetchPopular()
         updateViews()
     }
@@ -66,6 +68,7 @@ class HomeView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
     func updateViews() {
         popularLabel.text = "Popular"
         locationLabel.text = "Layton, UT"
+        foodCategoriesLabel.text = "Food Categories"
         locationImage.image = UIImage(systemName: "location")
         if tally == 0 {
             orderNowButton.setTitle("No Orders", for: .normal)
@@ -78,17 +81,22 @@ class HomeView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == categoriesCollectionView {
             return CategoryOptions.categories.count
-        } else if collectionView == suggestionCollectionView {
-            return businessess.count
         }
+            return businessess.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == categoriesCollectionView {
-            guard let cell = categoriesCollectionView.dequeueReusableCell(withReuseIdentifier: "categoriesCell", for: indexPath) as? CategoryCollectionViewCell else { return UICollectionViewCell() }
-            #warning("start here")
+            guard let cell = categoriesCollectionView.dequeueReusableCell(withReuseIdentifier: "categoriesCell", for: indexPath) as? CategoryCollectionViewCell
+            else { return UICollectionViewCell() }
+            
+            let category = CategoryOptions.categories[indexPath.row]
+            cell.updateViews(category: category)
+            
+            return cell
                     
-        } else if collectionView == suggestionCollectionView {
+        }
+        
             guard let cell = suggestionCollectionView.dequeueReusableCell(withReuseIdentifier: "suggestionCell", for: indexPath) as? SuggestionCVCell,
                   
                     let bussiness = businessess[indexPath.row]
@@ -100,7 +108,7 @@ class HomeView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
             cell.suggestionImage.load(url: bussiness.imageURL)
             
             return cell
-        }
+
     }
     
      
@@ -120,6 +128,14 @@ class HomeView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
             
             destination.business = business
             destination.delegate = self
+        } else if segue.identifier == "toCategoryTableView" {
+            guard let destination = segue.destination as? CategoryTableViewController,
+                  let cell = sender as? CategoryCollectionViewCell,
+                  let indexPath = self.categoriesCollectionView.indexPath(for: cell)
+            else { return }
+                    
+            let selectedCategory = CategoryOptions.categories[indexPath.row]
+            destination.category = selectedCategory
         }
     }
   

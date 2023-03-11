@@ -21,6 +21,5 @@ class SuggestionCVCell: UICollectionViewCell {
         nameLabel.text = business.name
         ratingLabel.text = "Rating: \(business.rating)"
         priceLabel.text = business.price
-//        suggestionImage.image = business.imageURL
     }
 }
