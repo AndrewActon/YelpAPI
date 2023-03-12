@@ -29,7 +29,7 @@ class HomeView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
     @IBOutlet weak var driverImage: UIImageView!
     @IBOutlet weak var foodCategoriesLabel: UILabel!
     @IBOutlet weak var categoriesCollectionView: UICollectionView!
-    
+    @IBOutlet weak var orderView: UIView!
     
     
     
@@ -66,15 +66,23 @@ class HomeView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
     }
     
     func updateViews() {
-        popularLabel.text = "Popular"
-        locationLabel.text = "Layton, UT"
-        foodCategoriesLabel.text = "Food Categories"
+        //Location Stack
         locationImage.image = UIImage(systemName: "location")
+        locationImage.tintColor = .orange
+        locationLabel.text = "Layton, UT"
+        
+        //Order View
+        orderView.layer.cornerRadius = 15
+        orderView.addVerticalGradientLayer()
+        orderNowButton.layer.cornerRadius = 15
         if tally == 0 {
             orderNowButton.setTitle("No Orders", for: .normal)
         } else {
             orderNowButton.setTitle("Order Now \(tally)", for: .normal)
         }
+        
+        popularLabel.text = "Popular"
+        foodCategoriesLabel.text = "Food Categories"
     }
     
     //animateOffScreen animation function

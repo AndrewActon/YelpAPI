@@ -24,6 +24,8 @@ class DetailMenuVC: UIViewController {
     @IBOutlet weak var detailPriceLabel: UILabel!
     @IBOutlet weak var detailRatingLabel: UILabel!
     @IBOutlet weak var detailCategoriesLabel: UILabel!
+    @IBOutlet weak var isOpenLabel: UILabel!
+    @IBOutlet weak var addToCartButton: UIButton!
     
     
     
@@ -31,15 +33,18 @@ class DetailMenuVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         updateViews()
+        isOpen()
     }
     
     //MARK: - Helper Methods
     
-    func isOpen () -> String {
+    func isOpen () {
         if business?.isClosed == true {
-            return "False"
+            isOpenLabel.text = "Closed"
+            isOpenLabel.textColor = .systemRed
         } else {
-            return "True"
+            isOpenLabel.text = "Open Now"
+            isOpenLabel.textColor = .systemGreen
         }
     }
     
@@ -80,6 +85,8 @@ class DetailMenuVC: UIViewController {
         let categories = categoriesArray.joined(separator: ", ")
         
         detailCategoriesLabel.text = categories
+        
+        addToCartButton.layer.cornerRadius = 15
     }
     
     //MARK: - Actions
@@ -90,7 +97,7 @@ class DetailMenuVC: UIViewController {
     
     @IBAction func detailCallButtonTapped(_ sender: Any) {
         guard let phoneNumber = business?.phone,
-            let url = URL(string: "tel://\(phoneNumber)") else { return }
+            let url = URL(string: "tel:\(phoneNumber)") else { return }
         print("Calling: \(phoneNumber)")
         UIApplication.shared.open(url)
     }
