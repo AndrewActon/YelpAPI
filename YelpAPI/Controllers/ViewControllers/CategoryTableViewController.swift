@@ -56,4 +56,17 @@ class CategoryTableViewController: UITableViewController {
         return cell
     }
 
+    //MARK: - Navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "toDetailMenu" {
+            guard let indexPath = tableView.indexPathForSelectedRow,
+                  let destination = segue.destination as? DetailMenuVC
+            else { return }
+            
+            let business = business[indexPath.row]
+            
+            destination.business = business
+        }
+    }
+    
 }

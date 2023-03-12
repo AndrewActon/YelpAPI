@@ -281,6 +281,7 @@
                                     <outlet property="categoryDetailImage" destination="SQV-Mu-gnb" id="9ck-3T-fTp"/>
                                     <outlet property="categoryDetailRatingLabel" destination="U4M-Wp-rXY" id="eKv-88-NtQ"/>
                                     <outlet property="categoryDetailTitleLabel" destination="Rlt-f5-BDv" id="30Q-Lq-5RF"/>
+                                    <segue destination="KSX-YS-rip" kind="presentation" identifier="toDetailMenu" id="Xdg-aQ-k6v"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -504,6 +505,9 @@
             <point key="canvasLocation" x="57.251908396946561" y="-2.1126760563380285"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="Xdg-aQ-k6v"/>
+    </inferredMetricsTieBreakers>
     <resources>
         <image name="AstroPizzaDude copy" width="626" height="626"/>
         <image name="Driver" width="1719" height="1188"/>

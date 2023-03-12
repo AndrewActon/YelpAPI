@@ -77,6 +77,42 @@ class HomeView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
         }
     }
     
+    //animateOffScreen animation function
+        func animateOffScreen(imageView: UIImageView) {
+            let originalCenter = imageView.center
+            UIView.animateKeyframes(withDuration: 1.5, delay: 0.0, animations: {
+
+                UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 0.25, animations: {
+                    imageView.center.x -= 80.0
+                    imageView.center.y += 10.0
+                })
+
+                UIView.addKeyframe(withRelativeStartTime: 0.1, relativeDuration: 0.4) {
+                    imageView.transform = CGAffineTransform(rotationAngle: -.pi / 80)
+                }
+
+                UIView.addKeyframe(withRelativeStartTime: 0.25, relativeDuration: 0.25) {
+                    imageView.center.x -= 100.0
+                    imageView.center.y += 50.0
+                    imageView.alpha = 0.0
+                }
+
+                UIView.addKeyframe(withRelativeStartTime: 0.51, relativeDuration: 0.01) {
+                    imageView.transform = .identity
+                    imageView.center = CGPoint(x:  900.0, y: 100.0)
+                }
+
+                UIView.addKeyframe(withRelativeStartTime: 0.55, relativeDuration: 0.45) {
+                    imageView.center = originalCenter
+                    imageView.alpha = 1.0
+                }
+
+            }, completion: { (_) in
+                self.tally = 0
+                self.orderNowButton.setTitle("No Orders", for: .normal)
+            })
+        }
+    
     //MARK: - Collection View
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == categoriesCollectionView {
@@ -128,7 +164,8 @@ class HomeView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
             
             destination.business = business
             destination.delegate = self
-        } else if segue.identifier == "toCategoryTableView" {
+        }
+        else if segue.identifier == "toCategoryTableView" {
             guard let destination = segue.destination as? CategoryTableViewController,
                   let cell = sender as? CategoryCollectionViewCell,
                   let indexPath = self.categoriesCollectionView.indexPath(for: cell)
@@ -148,7 +185,9 @@ class HomeView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
                 self.driverImage.transform = CGAffineTransform(translationX: 10, y: 1)
             }
             self.driverImage.transform = .identity
-            }
+        } else if tally > 0 {
+            animateOffScreen(imageView: driverImage)
+        }
     }
     
     
